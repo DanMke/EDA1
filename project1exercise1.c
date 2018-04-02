@@ -20,15 +20,15 @@ respectivamente.
 #include <stdlib.h>
 #define MAX 10
 
-int fneuronio(float *entradas, float *pesos, float limiarT, int valorMax, int *excitada);
+void fneuronio(float *entradas, float *pesos, float limiarT, int valorMax, int *excitada);
 
 int main (int argc, char *argv[]) {
-  int contador, excitada = 0, *status = &excitada;
+  int contador, status = 0;
   float entradas[MAX], pesos[MAX], limiarT;
 
   printf("Insira as 10 entradas: \n");
 
-  for contador = 0; contador < MAX; contador++) {
+  for (contador = 0; contador < MAX; contador++) {
     scanf("%f\n", &entradas[contador]);
   }
 
@@ -38,9 +38,25 @@ int main (int argc, char *argv[]) {
     scanf("%f\n", &pesos[contador]);
   }
 
+  fneuronio(entradas, pesos, limiarT, MAX, &status);
+
+
+
   return 0;
 }
 
-int fneuronio(float *entradas, float *pesos, float limiarT, int valorMax, int *excitada) {
+void fneuronio(float *entradas, float *pesos, float limiarT, int valorMax, int *excitada) {
+  int contador = 0;
+  float somaP = 0.0;
+
+  for (contador = 0; contador < valorMAX; i++) {
+    somaP += *(entradas + contador) * *(pesos + contador);
+  }
+
+  if (somaP > limiarT) {
+    *excitada = 1;
+  } else {
+    *excitada = 0;
+  }
 
 }
