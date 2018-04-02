@@ -12,7 +12,7 @@ valor 1 caso o neurônio esteja excitado ou 0 caso o neurônio esteja
 inibido.
 c) No programa principal, verificar se o valor de retorno da função
 “fneuronio” foi 1 ou 0 e escrever na tela do computador a
-mensagem “Neurônio ativado!” ou “Neurôno inibido!”,
+mensagem “Neurônio ativado!” ou “Neurônio inibido!”,
 respectivamente.
 */
 
@@ -29,18 +29,25 @@ int main (int argc, char *argv[]) {
   printf("Insira as 10 entradas: \n");
 
   for (contador = 0; contador < MAX; contador++) {
-    scanf("%f\n", &entradas[contador]);
+    scanf("%f", &entradas[contador]);
   }
 
   printf("Insira os 10 pesos: \n");
 
-  for contador = 0; contador < MAX; contador++) {
-    scanf("%f\n", &pesos[contador]);
+  for (contador = 0; contador < MAX; contador++) {
+    scanf("%f", &pesos[contador]);
   }
+
+  printf("Insira o valor do limiar T: \n");
+  scanf("%f", &limiarT);
 
   fneuronio(entradas, pesos, limiarT, MAX, &status);
 
-
+  if (status == 1) {
+    printf("Neuronio ativado!\n");
+  } else {
+    printf("Neuronio inibido!\n");
+  }
 
   return 0;
 }
@@ -49,7 +56,7 @@ void fneuronio(float *entradas, float *pesos, float limiarT, int valorMax, int *
   int contador = 0;
   float somaP = 0.0;
 
-  for (contador = 0; contador < valorMAX; i++) {
+  for (contador = 0; contador < valorMax; contador++) {
     somaP += *(entradas + contador) * *(pesos + contador);
   }
 
@@ -58,5 +65,4 @@ void fneuronio(float *entradas, float *pesos, float limiarT, int valorMax, int *
   } else {
     *excitada = 0;
   }
-
 }
