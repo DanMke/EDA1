@@ -26,7 +26,7 @@ void printPostOrder(BinaryTree *root);
 
 BinaryTree *removeCurrent(BinaryTree *current);
 
-void removeBinaryTree(BinaryTree *root, int value);
+void removeValue(BinaryTree *root, int value);
 
 void searchValue(BinaryTree *root, int value);
 
@@ -192,7 +192,7 @@ BinaryTree *removeCurrent(BinaryTree *current) {
   return node2;
 }
 ///////////////////////////////////////////////////////////////
-void removeBinaryTree(BinaryTree *root, int value) {
+void removeValue(BinaryTree *root, int value) {
   if(root == NULL) {
     return;
   }
