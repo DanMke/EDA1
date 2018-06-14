@@ -24,11 +24,20 @@ void printInOrder(BinaryTree *root);
 void printPostOrder(BinaryTree *root);
 // postOrder: visita o filho da esquerda, o filho da direita e a raiz
 
+BinaryTree *removeCurrent(BinaryTree *current);
+
+void removeBinaryTree(BinaryTree *root, int value);
+
+int searchValue(BinaryTree *root, int value);
+
+BinaryTree *loadTreeFromFile();
+
 ////////////////////////// main /////////////////////////////
 int main () {
 
   BinaryTree *root = createBinaryTree(); // Aponta para o primeiro elemento da arvore.
 
+  // root = loadTreeFromFile();
 
   // printPreOrder(root);
 
@@ -158,7 +167,95 @@ void printPostOrder(BinaryTree *root) {
   }
 }
 ///////////////////////////////////////////////////////////////
-
+BinaryTree *removeCurrent(BinaryTree *current) {
+  BinaryTree *node1, *node2;
+  if(current->left == NULL) {
+    // sem filho da esquerda, apontar para o filho da direita (trata no folha e com 1 filho)
+    node2 = current->right;
+    free(current);
+    return node2;
+  }
+  node1 = current;
+  node2 = current->left;
+  while(node2->right != NULL) {
+    // procura filho mais a direita da sub-arvore esquerda
+    node1 = node2;
+    node2 = node2->right;
+  }
+  if(node1 != current) {
+    // copia o filho mais a direita na sub-arvore esquerda parada o lugar do no removido
+    node1->right = node2->left;
+    node2->left = current->left;
+  }
+  node2->right = current->right;
+  free(current);
+  return node2;
+}
 ///////////////////////////////////////////////////////////////
-
+void removeBinaryTree(BinaryTree *root, int value) {
+  if(root == NULL) {
+    return;
+  }
+  BinaryTree *previous = NULL;
+  BinaryTree *current = *root;
+  while(current != NULL) {
+    if(value == current->info) { // verifica se achou o valor
+      if(value == *root) { // verifica se eh a raiz
+        *root = removeCurrent(current);
+      } else {
+        if(previous->right == current) { // verifica se eh o da direita
+          previous->right = removeCurrent(current);
+        } else { // verifica se eh da esquerda
+          previous->left = removeCurrent(current);
+        }
+      }
+    }
+    previous = current;
+    if(value > current->info) {
+      current = current->right;
+    } else {
+      current = current->left;
+    }
+  }
+}
 ///////////////////////////////////////////////////////////////
+int searchValue(BinaryTree *root, int value) {
+  if(root == NULL) {
+    return 0;
+  }
+  BinaryTree *current = *root;
+  while(current != NULL) {
+    if(value == current->info) {
+      return 1; // se existe na arvore
+    }
+    if(value > current->info) {
+      current = current->right;
+    } else {
+      current = current->left;
+    }
+  }
+  return 0;
+}
+///////////////////////////////////////////////////////////////
+BinaryTree *loadTreeFromFile() {
+  FILE *fp;
+  int number;
+  char c;
+
+  BinaryTree *root = createBinaryTree();
+
+  fp = fopen("BSTs/bst1.txt", "r");
+
+  if (fp == NULL) {
+    printf("not found\n");
+  }
+
+  while(c != EOF) {
+    fscanf(fp, "%d", &number);
+    insertBinaryTree(root, number);
+  }
+
+  fclose(fp);
+
+  return root;
+}
