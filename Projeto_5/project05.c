@@ -1,17 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct binary_tree {
+struct node {
   int info;
-  struct binary_tree *left;
-  struct binary_tree *right;
-} BinaryTree;
+  struct node *left;
+  struct node *right;
+};
+
+typedef struct node *BinaryTree;
 
 BinaryTree *createBinaryTree();
 
 void insertBinaryTree(BinaryTree *root, int value);
 
-void freeNode(BinaryTree *node);
+void freeNode(struct node *no);
 
 void freeBinaryTree(BinaryTree *root);
 
@@ -24,7 +26,7 @@ void printInOrder(BinaryTree *root);
 void printPostOrder(BinaryTree *root);
 // postOrder: visita o filho da esquerda, o filho da direita e a raiz
 
-BinaryTree *removeCurrent(BinaryTree *current);
+struct node *removeCurrent(struct node *current);
 
 void removeValue(BinaryTree *root, int value);
 
@@ -37,7 +39,22 @@ int main () {
 
   BinaryTree *root = createBinaryTree(); // Aponta para o primeiro elemento da arvore.
 
-  // root = loadTreeFromFile();
+  /*
+  int selector;
+  scanf("%d\n", &selector);
+  while(selector != 8) {
+    if(selector == 1) {
+
+    } else if(selector == 2) {
+
+    } else {
+      printf("Invalid option\n");
+    }
+  }
+
+  */
+
+  root = loadTreeFromFile();
 
   // printPreOrder(root);
 
@@ -66,7 +83,8 @@ void insertBinaryTree(BinaryTree *root, int value) {
   if(root == NULL) {
     return;
   }
-  BinaryTree *new = (BinaryTree*) malloc(sizeof(BinaryTree));
+  struct node *new;
+  new = (struct node*) malloc(sizeof(struct node));
   if(new == NULL) { // confere a alocacao
     return;
   }
@@ -77,8 +95,8 @@ void insertBinaryTree(BinaryTree *root, int value) {
   if(*root == NULL) {
     *root = new;
   } else {
-    BinaryTree *current = *root;
-    BinaryTree *previous = NULL;
+    struct node *current = *root;
+    struct node *previous = NULL;
 
     while(current != NULL) { // quando tiver achado aonde ira ser inserido, para o while
       previous = current; // salva o atual pois o atual se tornara um dos filhos
@@ -102,14 +120,14 @@ void insertBinaryTree(BinaryTree *root, int value) {
   }
 }
 ///////////////////////////////////////////////////////////////
-void freeNode(BinaryTree *node) {
-  if(node == NULL) { // verifica se a alocacao deu certo
+void freeNode(struct node *no) {
+  if(no == NULL) { // verifica se a alocacao deu certo
     return;
   }
-  freeNode(node->left); // vai a esquerda e libera
-  freeNode(node->right); // vai a direita e libera
-  free(node); // libera o no apos liberar tudo a direita e a esquerda
-  node = NULL;
+  freeNode(no->left); // vai a esquerda e libera
+  freeNode(no->right); // vai a direita e libera
+  free(no); // libera o no apos liberar tudo a direita e a esquerda
+  no = NULL;
 }
 ///////////////////////////////////////////////////////////////
 void freeBinaryTree(BinaryTree *root) {
@@ -167,8 +185,8 @@ void printPostOrder(BinaryTree *root) {
   }
 }
 ///////////////////////////////////////////////////////////////
-BinaryTree *removeCurrent(BinaryTree *current) {
-  BinaryTree *node1, *node2;
+struct node *removeCurrent(struct node *current) {
+  struct node *node1, *node2;
   if(current->left == NULL) {
     // sem filho da esquerda, apontar para o filho da direita (trata no folha e com 1 filho)
     node2 = current->right;
@@ -196,11 +214,11 @@ void removeValue(BinaryTree *root, int value) {
   if(root == NULL) {
     return;
   }
-  BinaryTree *previous = NULL;
-  BinaryTree *current = *root;
+  struct node *previous = NULL;
+  struct node *current = *root;
   while(current != NULL) {
     if(value == current->info) { // verifica se achou o valor
-      if(value == *root) { // verifica se eh a raiz
+      if(current == *root) { // verifica se eh a raiz
         *root = removeCurrent(current);
       } else {
         if(previous->right == current) { // verifica se eh o da direita
@@ -224,17 +242,17 @@ void searchValue(BinaryTree *root, int value) {
   if(root == NULL) {
     printf("O valor não está presente na árvore!\n");
   }
-  BinaryTree *current = *root;
-  BinaryTree *previous = NULL;
+  struct node *current = *root;
+  struct node *previous = NULL;
   while(current != NULL) {
     if(value == current->info) {
       printf("Valor encontrado %d\n", value); // se existe na arvore
       printf("Nível do nó: %d\n", level);
       if(previous != NULL) {
         printf("Pai: %d\n", previous->info);
-        if(previous->right != current->info && previous->right != NULL) {
+        if(previous->right->info != current->info && previous->right != NULL) {
           printf("Irmão: %d\n", previous->right->info);
-        } else if (previous->left != current->info && previous->left != NULL){
+        } else if (previous->left->info != current->info && previous->left != NULL){
           printf("Irmão: %d\n", previous->left->info);
         }
       }
@@ -253,7 +271,6 @@ void searchValue(BinaryTree *root, int value) {
 BinaryTree *loadTreeFromFile() {
   FILE *fp;
   int number;
-  char c;
 
   BinaryTree *root = createBinaryTree();
 
@@ -263,14 +280,15 @@ BinaryTree *loadTreeFromFile() {
     printf("not found\n");
   }
 
-  while(c != EOF) {
+  while(!feof(fp)) {
     fscanf(fp, "%d", &number);
+    printf("%d\n", number);
     insertBinaryTree(root, number);
   }
 
   fclose(fp);
 
-  printf("Endereço da raíz: %d\n", &root);
+  printf("Endereço da raíz: %d\n", &root); //TODO
 
   return root;
 }
