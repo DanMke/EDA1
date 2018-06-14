@@ -270,5 +270,7 @@ BinaryTree *loadTreeFromFile() {
 
   fclose(fp);
 
+  printf("Endereço da raíz: %d\n", &root);
+
   return root;
 }
