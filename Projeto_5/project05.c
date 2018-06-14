@@ -28,7 +28,7 @@ BinaryTree *removeCurrent(BinaryTree *current);
 
 void removeBinaryTree(BinaryTree *root, int value);
 
-int searchValue(BinaryTree *root, int value);
+void searchValue(BinaryTree *root, int value);
 
 BinaryTree *loadTreeFromFile();
 
@@ -219,22 +219,35 @@ void removeBinaryTree(BinaryTree *root, int value) {
   }
 }
 ///////////////////////////////////////////////////////////////
-int searchValue(BinaryTree *root, int value) {
+void searchValue(BinaryTree *root, int value) {
+  int level = 1;
   if(root == NULL) {
-    return 0;
+    printf("O valor não está presente na árvore!\n");
   }
   BinaryTree *current = *root;
+  BinaryTree *previous = NULL;
   while(current != NULL) {
     if(value == current->info) {
-      return 1; // se existe na arvore
+      printf("Valor encontrado %d\n", value); // se existe na arvore
+      printf("Nível do nó: %d\n", level);
+      if(previous != NULL) {
+        printf("Pai: %d\n", previous->info);
+        if(previous->right != current->info && previous->right != NULL) {
+          printf("Irmão: %d\n", previous->right->info);
+        } else if (previous->left != current->info && previous->left != NULL){
+          printf("Irmão: %d\n", previous->left->info);
+        }
+      }
     }
+    previous = current;
+    level++;
     if(value > current->info) {
       current = current->right;
     } else {
       current = current->left;
     }
   }
-  return 0;
+  printf("O valor não está presente na árvore!\n");
 }
 ///////////////////////////////////////////////////////////////
 BinaryTree *loadTreeFromFile() {
